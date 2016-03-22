@@ -167,12 +167,11 @@ namespace flowTools {
 				pingPong.getHeight() != _buffer.getHeight() ||
 				pingPong.getInternalFormat() != _buffer.getTexture().getTextureData().glInternalFormat) {
 				pingPong.allocate(_buffer.getWidth(),  _buffer.getHeight(), _buffer.getTexture().getTextureData().glInternalFormat );
-				
+				pingPong.black();
 			}
 			
 			ofPushStyle();
-			ofEnableBlendMode(OF_BLENDMODE_DISABLED);
-			
+			/*
 			if (_decay > 0) {
 				pingPong.swap();
 				decayShader.update(*pingPong.getBuffer(), pingPong.getBackTexture(), _buffer.getTexture(), _decay);
@@ -183,6 +182,14 @@ namespace flowTools {
 				_buffer.getTexture().draw(0, 0, pingPong.getWidth(), pingPong.getHeight());
 				pingPong.getBuffer()->end();
 			}
+			ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+			pingPong.getBuffer()->begin();
+			ofSetColor(0, 0, 0, 255 * _decay);
+			ofRect(0, 0, pingPong.getWidth(), pingPong.getHeight());
+			ofEnableBlendMode(OF_BLENDMODE_ADD);
+			ofSetColor(255, 255, 255, 255);
+			_buffer.draw(0, 0, pingPong.getWidth(), pingPong.getHeight());
+			pingPong.getBuffer()->end();
 			
 			if (_radius > 0 && _passes > 0) {
 				for(int i = 0; i < _passes; i++) {
@@ -202,7 +209,44 @@ namespace flowTools {
 			_buffer.begin();
 			pingPong.getTexture().draw(0,0, pingPong.getWidth(), pingPong.getHeight());
 			_buffer.end();
-			
+			*/
+			//ofEnableBlendMode(OF_BLENDMODE_DISABLED);
+			//ofDisableDepthTest();
+			//pingPong.getBuffer()->black();
+			pingPong.getBuffer()->begin();
+			ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+			//_decay = 10;
+			ofSetColor(0, 20 + _decay);
+			ofRect(0, 0, pingPong.getWidth(), pingPong.getHeight());
+			//ofClear(0, 0);
+			ofEnableBlendMode(OF_BLENDMODE_ADD);
+			//ofSetColor(255 - _decay, 255 - _decay, 255 - _decay, 255);
+			//pingPong.getBackTexture().draw(0, 0, pingPong.getWidth(), pingPong.getHeight());
+			ofSetColor(255, 255, 255, 255);
+			_buffer.draw(0, 0, pingPong.getWidth(), pingPong.getHeight());
+			pingPong.getBuffer()->end();
+			/*
+			if (_radius > 0 && _passes > 0) {
+				for (int i = 0; i < _passes; i++) {
+					for (int j = 0; j < 2; j++) {
+						pingPong.swap();
+						pingPong.getBuffer()->begin();
+						blurShader[j].begin();
+						blurShader[j].setUniformTexture("backbuffer", pingPong.getBackTexture(), 0);
+						blurShader[j].setUniform1f("radius", _radius);
+						renderFrame(pingPong.getWidth(), pingPong.getHeight());
+						blurShader[j].end();
+						pingPong.getBuffer()->end();
+					}
+				}
+			}*/
+
+			ofEnableBlendMode(OF_BLENDMODE_DISABLED);
+			_buffer.begin();
+			pingPong.getTexture().draw(0, 0, pingPong.getWidth(), pingPong.getHeight());
+			_buffer.end();
+
+			pingPong.swap();
 			ofPopStyle();
 		}
 		

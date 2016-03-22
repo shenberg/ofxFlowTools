@@ -47,6 +47,7 @@ namespace flowTools {
 //		parameters.add(doTimeBlurDecay.set("do time blur", true));
 		doTimeBlurDecay.set("do time blur", true);
 		timeBlurParameters.setName("time decay blur");
+		timeBlurParameters.add(doTimeBlurDecay);
 		timeBlurParameters.add(timeBlurDecay.set("decay", 3, 0, 10));
 		timeBlurParameters.add(timeBlurRadius.set("blur radius", 3, 0, 10));
 		parameters.add(timeBlurParameters);

@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "ofxFlowTools.h"
+#include "ofKinectV2.h"
 
 //#define USE_PROGRAMMABLE_GL					// Maybe there is a reason you would want to
 
@@ -35,6 +36,7 @@ public:
 	
 	// Camera
 	ofVideoGrabber		simpleCam;
+	ofKinectV2			kinect;
 	bool				didCamUpdate;
 	ftFbo				cameraFbo;
 	ofParameter<bool>	doFlipCamera;

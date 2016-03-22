@@ -38,8 +38,9 @@ void ofApp::setup(){
 	
 	// CAMERA
 	simpleCam.setup(640, 480, true);
+	//kinect.setup(1280, 720);
 	didCamUpdate = false;
-	cameraFbo.allocate(640, 480);
+	cameraFbo.allocate(1280, 720);
 	cameraFbo.black();
 	
 	// GUI
@@ -147,16 +148,22 @@ void ofApp::update(){
 	lastTime = ofGetElapsedTimef();
 	
 	simpleCam.update();
+	//kinect.update();
 	
 	if (simpleCam.isFrameNew()) {
+	//if (kinect.isFrameNew()) {
 		ofPushStyle();
 		ofEnableBlendMode(OF_BLENDMODE_DISABLED);
 		cameraFbo.begin();
 		
-		if (doFlipCamera)
+		if (doFlipCamera) {
 			simpleCam.draw(cameraFbo.getWidth(), 0, -cameraFbo.getWidth(), cameraFbo.getHeight());  // Flip Horizontal
-		else
+			//kinect.draw(cameraFbo.getWidth(), 0, -cameraFbo.getWidth(), cameraFbo.getHeight());  // Flip Horizontal
+		}			
+		else {
+			//kinect.draw(0, 0, cameraFbo.getWidth(), cameraFbo.getHeight());
 			simpleCam.draw(0, 0, cameraFbo.getWidth(), cameraFbo.getHeight());
+		}
 		cameraFbo.end();
 		ofPopStyle();
 		

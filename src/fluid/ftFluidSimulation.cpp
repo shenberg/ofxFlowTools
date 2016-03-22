@@ -77,8 +77,8 @@ namespace flowTools {
 		densityHeight = (!_densityHeight)? simulationHeight: _densityHeight;
 		
 		int	internalFormatDensity = GL_RGBA32F;
-		int	internalFormatVelocity = GL_RG32F;
-		int	interformatPressure = GL_R32F;
+		int	internalFormatVelocity = GL_RGBA32F;
+		int	interformatPressure = GL_RGBA32F;
 		int	internalFormatObstacle = GL_R8;
 			
 		densitySwapBuffer.allocate(densityWidth,densityHeight,internalFormatDensity);
@@ -150,6 +150,7 @@ namespace flowTools {
 		ofEnableBlendMode(OF_BLENDMODE_DISABLED);
 
 		// CLAMP LENGTH
+		
 		if (maxDensity.get() > 0.0) {
 			clampLengthShader.update(*densitySwapBuffer.getBuffer(),
 									 densitySwapBuffer.getBackTexture(),
@@ -324,6 +325,11 @@ namespace flowTools {
 						 velocitySwapBuffer.getBackTexture(),
 						 _tex,
 						 _strength);
+		/*velocitySwapBuffer.getBackBuffer()->begin();
+		ofEnableBlendMode(OF_BLENDMODE_ADD);
+		ofSetColor((int)(255 * _strength), 255);
+		_tex.draw(0, 0, velocitySwapBuffer.getWidth(), velocitySwapBuffer.getHeight());
+		velocitySwapBuffer.getBackBuffer()->end();*/
 		velocitySwapBuffer.swap();
 		ofPopStyle();
 	}

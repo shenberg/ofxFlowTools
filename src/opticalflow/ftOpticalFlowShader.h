@@ -60,6 +60,13 @@ namespace flowTools {
 										   flow.x = -(vx.x + vx.y + vx.z) / 3.0 * inverseX;
 										   flow.y = -(vy.x + vy.y + vy.z) / 3.0 * inverseY;
 										   
+										   if (length(flow) < threshold) {
+											   flow = vec2(0);
+										   }
+										   else {
+											   flow *= force;
+										   }
+										   /*
 										   // apply treshold
 										   float strength = length(flow);
 										   strength = max(0.0, strength - threshold) / (1.0 - threshold);
@@ -67,7 +74,10 @@ namespace flowTools {
 										   
 										   // apply force
 										   flow *= vec2(force);
-										   
+
+										   if (isnan(flow.x) || isinf(flow.x)) flow.x = 0;
+										   if (isnan(flow.y) || isinf(flow.y)) flow.y = 0;
+										   */
 										   // set color
 										   gl_FragColor = vec4(flow, 0.0, 1.0);
 									   }
@@ -117,6 +127,13 @@ namespace flowTools {
 									  flow.x = -(vx.x + vx.y + vx.z) / 3.0 * inverseX;
 									  flow.y = -(vy.x + vy.y + vy.z) / 3.0 * inverseY;
 									  
+									  if (length(flow) < threshold) {
+										  flow = vec2(0);
+									  }
+									  else {
+										  flow *= force;
+									  }
+									  /*
 									  // apply treshold
 									  float strength = length(flow);
 									  strength = max(0.0, strength - threshold) / (1.0 - threshold);
@@ -124,7 +141,10 @@ namespace flowTools {
 									  
 									  // apply force
 									  flow *= vec2(force);
-									  
+
+									  if (isnan(flow.x) || isinf(flow.x)) flow.x = 0;
+									  if (isnan(flow.y) || isinf(flow.y)) flow.y = 0;
+									  */
 									  // set color
 									  fragColor = vec4(flow, 0.0, 1.0);
 								  }

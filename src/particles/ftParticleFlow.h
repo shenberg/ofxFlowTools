@@ -66,6 +66,7 @@ namespace flowTools {
 		ofParameter<float>	size;
 		ofParameter<float>	sizeSpread;
 		ofParameter<float>	twinkleSpeed;
+		ofParameter<float>  spawnHue;
 		
 		float	simulationWidth;
 		float	simulationHeight;
@@ -79,6 +80,7 @@ namespace flowTools {
 		ofTexture *flowVelocityTexture;
 		ofTexture *fluidVelocityTexture;
 		ofTexture *colorTexture;
+		ofTexture hueToRgb;
 		
 		ofVboMesh	particleMesh;
 		

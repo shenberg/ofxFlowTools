@@ -35,11 +35,14 @@ namespace flowTools {
 								  uniform float InverseCellSize;
 								  uniform vec2	Scale;
 								  uniform vec2	Dimensions;
-								  
+								  uniform float SpawnHue;
+
 								  void main(){
 									  vec2 st = gl_TexCoord[0].st;
-									  vec2 particlePos = texture2DRect(Backbuffer, st).xy;
-									  
+									  vec3 particlePosAndHue = texture2DRect(Backbuffer, st).xyz;
+									  vec2 particlePos = particlePosAndHue.xy;
+									  float hue = particlePosAndHue.z;
+
 									  vec4 alms = texture2DRect(ALMSTexture, st);
 									  float age = alms.x;
 									  float life = alms.y;
@@ -54,6 +57,7 @@ namespace flowTools {
 									  }
 									  else {
 										  particlePos = texture2DRect(HomeTexture, st).xy;
+										  hue = SpawnHue;
 									  }
 									  
 									  
@@ -76,18 +80,22 @@ namespace flowTools {
 								  uniform float InverseCellSize;
 								  uniform vec2	Scale;
 								  uniform vec2	Dimensions;
+								  uniform float SpawnHue;
 								  
 								  in vec2 texCoordVarying;
 								  out vec4 fragColor;
 								  
 								  void main(){
 									  vec2 st = texCoordVarying;
-									  vec2 particlePos = texture(Backbuffer, st).xy;
-									  
+									  vec3 particlePosAndHue = texture(Backbuffer, st).xyz;
+									  vec2 particlePos = particlePosAndHue.xy;
+									  float hue = particlePosAndHue.z;
+
 									  vec4 alms = texture(ALMSTexture, st);
 									  float age = alms.x;
 									  float life = alms.y;
 									  float mass = alms.z;
+
 									  
 									  if (age > 0.0) {
 										  vec2 st2 = particlePos * Scale;
@@ -98,10 +106,11 @@ namespace flowTools {
 									  }
 									  else {
 										  particlePos = texture(HomeTexture, st).xy;
+										  hue = SpawnHue;
 									  }
 									  
 									  
-									  fragColor = vec4(particlePos, 0.0, 1.0); ;
+									  fragColor = vec4(particlePos, hue, 1.0); ;
 								  }
 								  );
 			
@@ -116,7 +125,7 @@ namespace flowTools {
 		
 	public:
 		
-		void update(ofFbo& _buffer, ofTexture& _backBufferTexture, ofTexture& _ALMSTexture, ofTexture& _velocityTexture, ofTexture& _homeTexture, float _timeStep, float _cellSize){
+		void update(ofFbo& _buffer, ofTexture& _backBufferTexture, ofTexture& _ALMSTexture, ofTexture& _velocityTexture, ofTexture& _homeTexture, float _timeStep, float _cellSize, float hue){
 			_buffer.begin();
 			shader.begin();
 			shader.setUniformTexture("Backbuffer", _backBufferTexture, 0);
@@ -127,6 +136,7 @@ namespace flowTools {
 			shader.setUniform1f("InverseCellSize", 1.0 / _cellSize);
 			shader.setUniform2f("Scale", _velocityTexture.getWidth() / _buffer.getWidth(), _velocityTexture.getHeight()/ _buffer.getHeight());
 			shader.setUniform2f("Dimensions", _buffer.getWidth(), _buffer.getHeight());
+			shader.setUniform1f("SpawnHue", hue);
 			renderFrame(_buffer.getWidth(), _buffer.getHeight());
 			shader.end();
 			_buffer.end();

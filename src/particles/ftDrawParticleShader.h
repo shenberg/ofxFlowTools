@@ -29,12 +29,14 @@ namespace flowTools {
 								   uniform sampler2DRect positionTexture;
 								   uniform sampler2DRect ALMSTexture;
 								   uniform float TwinkleSpeed;
+								   uniform sampler2D HueToRGB;
 								   
 								   void main(){
 									   
 									   vec2 st = gl_Vertex.xy;
 									   
-									   vec2 texPos = texture2DRect(positionTexture, st).xy;
+									   vec3 texPosAndHue = texture2DRect(positionTexture, st).xyz;
+									   vec2 texPos = texPosAndHue.xy;
 									   gl_Position = gl_ModelViewProjectionMatrix * vec4(texPos, 0.0, 1.0);
 									   vec4 alms = texture2DRect(ALMSTexture, st);
 									   float age = alms.x;
@@ -42,12 +44,14 @@ namespace flowTools {
 									   float mass = alms.z;
 									   float size = alms.w;
 									   gl_PointSize = size;
+
+									   vec3 rgb = texture2D(HueToRGB, vec2(texPosAndHue.z, 0)).xyz;
 									   
 									   float alpha = min (0.5 - (age / life) * 0.5,age * 5.);
 									   alpha *= 0.5 + (cos((age + size) * TwinkleSpeed * mass) + 1.0) * 0.5;
 									   alpha = max(alpha, 0.0);
 									   
-									   gl_FrontColor = vec4(vec3(1.0), alpha);
+									   gl_FrontColor = vec4(rgb, alpha);
 									   
 								   }
 								   );
@@ -65,6 +69,7 @@ namespace flowTools {
 								   uniform	mat4 textureMatrix;
 								   uniform	sampler2DRect PositionTexture;
 								   uniform	sampler2DRect ALMSTexture;
+								   uniform  sampler2D HueToRGB;
 								   
 								   in vec4	position;
 								   in vec2	texcoord;
@@ -82,7 +87,8 @@ namespace flowTools {
 									   
 									   
 									   vec2 st = position.xy;
-									   vec2 texPos = texture(PositionTexture, st).xy;
+									   vec3 texPosAndHue = texture(PositionTexture, st).xyz;
+									   vec2 texPos = texPosAndHue.xy;
 									   gl_Position = modelViewProjectionMatrix * vec4(texPos, 0.0, 1.0);
 									   
 									   vec4 alms = texture(ALMSTexture, st);
@@ -91,12 +97,14 @@ namespace flowTools {
 									   float mass = alms.z;
 									   float size = alms.w;
 									   gl_PointSize = size;
+
+									   vec3 rgb = texture(HueToRGB, vec2(texPosAndHue.z, 0)).xyz;
 									   
 									   float alpha = min (0.5 - (age / life) * 0.5,age * 5.);
 									   alpha *= 0.5 + (cos((age + size) * TwinkleSpeed * mass) + 1.0) * 0.5;
 									   alpha = max(alpha, 0.0);
 									   
-									   colorVarying = vec4(vec3(1.0), alpha);
+									   colorVarying = vec4(rgb, alpha);
 								   }
 								);
 			
@@ -129,10 +137,11 @@ namespace flowTools {
 		
 	public:
 		
-		void update(ofVboMesh &particleVbo, int _numParticles, ofTexture& _positionTexture, ofTexture& _ALMSTexture, float _twinkleSpeed){
+		void update(ofVboMesh &particleVbo, int _numParticles, ofTexture& _positionTexture, ofTexture& _ALMSTexture, float _twinkleSpeed, ofTexture& _hueLookup){
 			shader.begin();
 			shader.setUniformTexture("PositionTexture", _positionTexture, 0);
 			shader.setUniformTexture("ALMSTexture", _ALMSTexture, 1);
+			shader.setUniformTexture("HueToRGB", _hueLookup, 2);
 			shader.setUniform1f("TwinkleSpeed", _twinkleSpeed);
 			
 			bool dinges = true;

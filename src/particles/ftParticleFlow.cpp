@@ -48,6 +48,7 @@ namespace flowTools {
 		parameters.add(size.set("size", 2, 0, 10));
 		parameters.add(sizeSpread.set("size spread", .75, 0, 1));
 		parameters.add(twinkleSpeed.set("twinkle speed", 11, 0, 20));
+		parameters.add(spawnHue.set("spawn hue", 0, 0, 1));
 	}
 	
 	void ftParticleFlow::setup(int _simulationWidth, int _simulationHeight, int _numParticlesX, int _numParticlesY) {
@@ -64,6 +65,14 @@ namespace flowTools {
 				particleMesh.addTexCoord(ofVec2f(x, y));
 			}
 		}
+
+		ofPixels lut;
+		lut.allocate(256, 1, OF_IMAGE_COLOR);
+		for (int i = 0; i < 256; i++) {
+			lut.setColor(i, 0, ofColor::fromHsb(i, 255, 255));
+		}
+		hueToRgb.allocate(lut, false);
+		hueToRgb.loadData(lut);
 		
 		int internalFormatVelocity = GL_RG32F;
 		
@@ -73,7 +82,7 @@ namespace flowTools {
 		
 		particleAgeLifespanMassSizeSwapBuffer.allocate(numParticlesX, numParticlesY, GL_RGBA32F, GL_NEAREST);
 		particleAgeLifespanMassSizeSwapBuffer.black();
-		particlePositionSwapBuffer.allocate(numParticlesX, numParticlesY, internalFormatVelocity, GL_NEAREST);
+		particlePositionSwapBuffer.allocate(numParticlesX, numParticlesY, GL_RGB32F, GL_NEAREST);
 		particlePositionSwapBuffer.black();
 		initPositionShader.update(*particlePositionSwapBuffer.getBuffer());
 		particlePositionSwapBuffer.swap();
@@ -131,7 +140,8 @@ namespace flowTools {
 									  fluidVelocitySwapBuffer.getBackTexture(),
 									  particleHomeBuffer.getTexture(),
 									  timeStep,
-									  cellSize.get());
+									  cellSize.get(),
+									  spawnHue.get());
 			particlePositionSwapBuffer.swap();
 			
 			ofPopStyle();
@@ -147,7 +157,7 @@ namespace flowTools {
 		ofPushView();
 		ofTranslate(_x, _y);
 		ofScale(_width / numParticlesX, _height / numParticlesY);
-		drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get());
+		drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb);
 		
 		ofPopView();
 	}

@@ -77,17 +77,39 @@ namespace flowTools {
 		
 	protected:
 		
-		void renderFrame(float _width, float _height){
+		void renderFrame(float _width, float _height, float _texWidth = 0, float _texHeight = 0){
+			if (_texWidth == 0) {
+				_texWidth = _width;
+				_texHeight = _height;
+			}
 			quad.setVertex(0, ofVec3f(0,0,0));
 			quad.setVertex(1, ofVec3f(_width,0,0));
 			quad.setVertex(2, ofVec3f(_width,_height,0));
 			quad.setVertex(3, ofVec3f(0,_height,0));
 			
 			quad.setTexCoord(0, ofVec2f(0,0));
-			quad.setTexCoord(1, ofVec2f(_width,0));
-			quad.setTexCoord(2, ofVec2f(_width,_height));
-			quad.setTexCoord(3, ofVec2f(0,_height));
+			quad.setTexCoord(1, ofVec2f(_texWidth,0));
+			quad.setTexCoord(2, ofVec2f(_texWidth,_texHeight));
+			quad.setTexCoord(3, ofVec2f(0,_texHeight));
 			
+			quad.draw();
+		}
+
+		void renderFrameMirrored(float _width, float _height, float _texWidth = 0, float _texHeight = 0) {
+			if (_texWidth == 0) {
+				_texWidth = _width;
+				_texHeight = _height;
+			}
+			quad.setVertex(0, ofVec3f(0, 0, 0));
+			quad.setVertex(1, ofVec3f(_width, 0, 0));
+			quad.setVertex(2, ofVec3f(_width, _height, 0));
+			quad.setVertex(3, ofVec3f(0, _height, 0));
+
+			quad.setTexCoord(0, ofVec2f(_texWidth, 0));
+			quad.setTexCoord(1, ofVec2f(0, 0));
+			quad.setTexCoord(2, ofVec2f(0, _texHeight));
+			quad.setTexCoord(3, ofVec2f(_texWidth, _texHeight));
+
 			quad.draw();
 		}
 		

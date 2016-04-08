@@ -153,11 +153,11 @@ namespace flowTools {
 		}
 	}
 	
-	void ftParticleFlow::draw(int _x, int _y, int _width, int _height, ofTexture& _velocity) {
+	void ftParticleFlow::draw(int _x, int _y, int _width, int _height) {
 		ofPushView();
 		ofTranslate(_x, _y);
 		ofScale(_width / numParticlesX, _height / numParticlesY);
-		drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb, _velocity);
+		drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb);
 		
 		ofPopView();
 	}

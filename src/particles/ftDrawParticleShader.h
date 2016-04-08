@@ -64,7 +64,6 @@ namespace flowTools {
 		}
 		
 		void glThree() {
-			string geometryShader;
 			vertexShader = GLSL150(
 								   uniform	mat4 modelViewProjectionMatrix;
 								   uniform	mat4 textureMatrix;
@@ -119,7 +118,6 @@ namespace flowTools {
 								  
 								  void main()
 								  {
-									  /*
 									  vec2 p = gl_PointCoord * 2.0 - vec2(1.0);
 									  float d = dot(p,p);
 									  float r = sqrt(d);
@@ -128,66 +126,22 @@ namespace flowTools {
 										  discard;
 									  else
 										  fragColor = colorVarying * (1.0, 1.0, 1.0, 1.0 - pow(r, 2.5));
-										  */
-									  fragColor = vec4(1,1,1,1);
 								  }
 								  );
 			
-			geometryShader = GLSL150(
-				uniform mat4 modelViewProjectionMatrix;
-			uniform	sampler2DRect PositionTexture;
-			uniform	sampler2DRect ALMSTexture;
-			uniform sampler2DRect VelocityTexture;
-			uniform vec2 texResolution;
-			uniform vec4 baseColor;
-			uniform float vectorSize;
-			uniform float maxArrowSize;
-
-			layout(points) in;
-			layout(triangle_strip) out;
-			layout(max_vertices = 4) out;
-
-			void main() {
-				vec2 index = gl_in[0].gl_Position.xy;
-
-				vec2 center = texture(PositionTexture, index).xy;
-				vec2 velocity = abs(texture(VelocityTexture, index).xy);
-				float size = texture(ALMSTexture, index).w;
-				float dx = size * (velocity.x + 0.1);
-				float dy = size *( velocity.y + 0.1);
-
-				gl_Position = modelViewProjectionMatrix * vec4(center.x + dx, center.y - dy, 0, 1);
-				EmitVertex();
-
-				gl_Position = modelViewProjectionMatrix * vec4(center.x + dx, center.y + dy, 0, 1);
-				EmitVertex();
-
-				gl_Position = modelViewProjectionMatrix * vec4(center.x - dx, center.y - dy, 0, 1);
-				EmitVertex();
-
-				gl_Position = modelViewProjectionMatrix * vec4(center.x - dx, center.y + dy, 0, 1);
-				EmitVertex();
-
-				EndPrimitive();
-
-			}
-			);
-
 			bInitialized *= shader.setupShaderFromSource(GL_VERTEX_SHADER, vertexShader);
 			bInitialized *= shader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragmentShader);
-			bInitialized *= shader.setupShaderFromSource(GL_GEOMETRY_SHADER_EXT, geometryShader);
 			bInitialized *= shader.bindDefaults();
 			bInitialized *= shader.linkProgram();
 		}
 		
 	public:
 		
-		void update(ofVboMesh &particleVbo, int _numParticles, ofTexture& _positionTexture, ofTexture& _ALMSTexture, float _twinkleSpeed, ofTexture& _hueLookup, ofTexture& _velocityTexture){
+		void update(ofVboMesh &particleVbo, int _numParticles, ofTexture& _positionTexture, ofTexture& _ALMSTexture, float _twinkleSpeed, ofTexture& _hueLookup){
 			shader.begin();
 			shader.setUniformTexture("PositionTexture", _positionTexture, 0);
 			shader.setUniformTexture("ALMSTexture", _ALMSTexture, 1);
 			shader.setUniformTexture("HueToRGB", _hueLookup, 2);
-			shader.setUniformTexture("VelocityTexture", _velocityTexture, 3);
 			shader.setUniform1f("TwinkleSpeed", _twinkleSpeed);
 			
 			bool dinges = true;

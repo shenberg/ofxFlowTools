@@ -73,7 +73,26 @@ namespace flowTools {
 		}
 		hueToRgb.allocate(lut, false);
 		hueToRgb.loadData(lut);
-		
+        
+        ofPixels texture;
+        const int texSize = 16;
+        texture.allocate(texSize, texSize, OF_IMAGE_GRAYSCALE);
+        for (int x = 0; x < texSize; x++) {
+            for(int y = 0; y < texSize; y++) {
+                int xRel = x - texSize/2;
+                int yRel = y - texSize/2;
+                float intensity = 1.0f - sqrt(xRel*xRel + yRel*yRel)*2/texSize;
+                if (intensity < 0 ) {
+                    intensity = 0;
+                }
+                intensity = pow(intensity, 2.5);
+                intensity *= 255;
+                texture.setColor(x, y, ofColor(intensity));
+            }
+        }
+        particleTexture.allocate(texture, false);
+        particleTexture.loadData(texture);
+        
 		int internalFormatVelocity = GL_RG32F;
 		
 		ofPushStyle();
@@ -96,7 +115,7 @@ namespace flowTools {
 		flowVelocitySwapBuffer.black();
 		densitySwapBuffer.allocate(simulationWidth, simulationHeight, GL_RGBA32F);
 		densitySwapBuffer.black();
-		obstacleBuffer.allocate(simulationWidth, simulationHeight, GL_RGB); // GL_RED??
+		obstacleBuffer.allocate(simulationWidth, simulationHeight, GL_R8); // GL_RED??
 		obstacleBuffer.black();
 		
 		ofPopStyle();
@@ -157,7 +176,7 @@ namespace flowTools {
 		ofPushView();
 		ofTranslate(_x, _y);
 		ofScale(_width / numParticlesX, _height / numParticlesY);
-		drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb, _velocity);
+		drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb, _velocity, particleTexture);
 		
 		ofPopView();
 	}

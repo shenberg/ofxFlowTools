@@ -81,6 +81,7 @@ namespace flowTools {
 		ofTexture *fluidVelocityTexture;
 		ofTexture *colorTexture;
 		ofTexture hueToRgb;
+        ofTexture particleTexture;
 		
 		ofVboMesh	particleMesh;
 		

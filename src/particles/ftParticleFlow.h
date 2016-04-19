@@ -40,7 +40,7 @@ namespace flowTools {
 		float	getMassSpread() { return massSpread.get(); }
 		float	getSize() { return size.get(); }
 		float	getSizeSpread() { return sizeSpread.get(); }
-		
+
 		void	setSpeed(float value) { speed.set(value); }
 		void	setCellSize(float value) { cellSize.set(value); }
 		void	setBirthChance(float value) { birthChance.set(value); }
@@ -53,7 +53,7 @@ namespace flowTools {
 		void	setSizeSpread(float value) { sizeSpread.set(value); }
 		
 		ofParameterGroup parameters;
-	private:
+	public:
 		ofParameter<bool>	bIsActive;
 		ofParameter<float>	speed;
 		ofParameter<float>	cellSize;

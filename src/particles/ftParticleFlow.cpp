@@ -37,6 +37,7 @@ namespace flowTools {
 	ftParticleFlow::ftParticleFlow(){
 		parameters.setName("particle flow");
 		parameters.add(bIsActive.set("active", true));
+        parameters.add(bStretch.set("stretch", false));
 		parameters.add(speed.set("speed", 20, 0, 100));
 		parameters.add(cellSize.set("cell size", 1.25, 0.0, 2.0));
 		parameters.add(birthChance.set("birth chance", 0.5, 0, 1));
@@ -75,7 +76,7 @@ namespace flowTools {
 		hueToRgb.loadData(lut);
         
         ofPixels texture;
-        const int texSize = 16;
+        const int texSize = 8;
         texture.allocate(texSize, texSize, OF_IMAGE_GRAYSCALE);
         for (int x = 0; x < texSize; x++) {
             for(int y = 0; y < texSize; y++) {
@@ -176,7 +177,11 @@ namespace flowTools {
 		ofPushView();
 		ofTranslate(_x, _y);
 		ofScale(_width / numParticlesX, _height / numParticlesY);
-		drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb, _velocity, particleTexture);
+        if (!bStretch) {
+            drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb);
+        } else {
+            drawParticleStretchedShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb, _velocity, particleTexture);
+        }
 		
 		ofPopView();
 	}

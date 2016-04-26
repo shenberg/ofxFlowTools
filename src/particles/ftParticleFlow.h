@@ -6,6 +6,7 @@
 #include "ftSwapBuffer.h"
 #include "ftInitPositionShader.h"
 #include "ftDrawParticleShader.h"
+#include "ftDrawParticleStretchedShader.h"
 #include "ftMoveParticleShader.h"
 #include "ftAgeLifespanMassSizeParticleShader.h"
 #include "ftAddForceShader.h"
@@ -55,6 +56,7 @@ namespace flowTools {
 		ofParameterGroup parameters;
 	public:
 		ofParameter<bool>	bIsActive;
+        ofParameter<bool>	bStretch;
 		ofParameter<float>	speed;
 		ofParameter<float>	cellSize;
 		ofParameter<float>	birthChance;
@@ -97,6 +99,7 @@ namespace flowTools {
 		
 		ftInitPositionShader	initPositionShader;
 		ftDrawParticleShader	drawParticleShader;
+        ftDrawParticleStretchedShader	drawParticleStretchedShader;
 		ftMoveParticleShader	moveParticleShader;
 		ftAgeLifespanMassSizeParticleShader	ALMSParticleShader;
 		ftAddForceShader		addShader;

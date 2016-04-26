@@ -51,7 +51,8 @@ namespace flowTools {
 		parameters.add(strength.set("strength", 2.5, 0, 10));
 		parameters.add(saturation.set("saturation", 3, 1, 5));
 		parameters.add(blurPasses.set("blur passes", 3, 0, 10));
-		parameters.add(blurRadius.set("blur radius", 5, 0, 10));
+        parameters.add(blurRadius.set("blur radius", 5, 0, 10));
+		parameters.add(hueOffset.set("hue offset", 0, 0, 1));
 		
 	};
 	
@@ -65,12 +66,11 @@ namespace flowTools {
 		}
 		else {
 			VelocityMaskShader.update(*colorMaskSwapBuffer.getBuffer(), *densityTexture, *velocityTexture, strength.get());
-			HSLShader.update(*colorMaskSwapBuffer.getBuffer(),
-							 colorMaskSwapBuffer.getBackTexture(),
-							 0,
+			HSLShader.update(*colorMaskSwapBuffer.getBackBuffer(),
+							 colorMaskSwapBuffer.getTexture(),
+                             hueOffset.get(),
 							 saturation.get(),
 							 1);
-			colorMaskSwapBuffer.swap();
 			
 			if (blurPasses.get() > 0 && blurRadius.get() > 0) {
 				gaussianBlurShader.update(*colorMaskSwapBuffer.getBuffer(), blurPasses.get(), blurRadius.get());

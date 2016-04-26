@@ -40,6 +40,7 @@ namespace flowTools {
 		ofParameter<float>	saturation;
 		ofParameter<int>	blurPasses;
 		ofParameter<float>	blurRadius;
+        ofParameter<float>  hueOffset;
 		
 		int					width;
 		int					height;

@@ -109,15 +109,17 @@ namespace flowTools {
 									  vec2	off_x = vec2(offset, 0.0);
 									  vec2	off_y = vec2(0.0, offset);
 									  
+
+									  const float factor = 1;
 									  //get the difference
-									  vec4 scr_dif = texture(CurrTexture, st) - texture(LastTexture, st);
+									  vec4 scr_dif = (texture(CurrTexture, st) - texture(LastTexture, st))*factor;
 									  
 									  //calculate the gradient
 									  vec4 gradx; vec4 grady; vec4 gradmag; vec4 vx; vec4 vy;
-									  gradx =  texture(LastTexture, st + off_x) - texture(LastTexture, st - off_x);
-									  gradx += texture(CurrTexture, st + off_x) - texture(CurrTexture, st - off_x);
-									  grady =  texture(LastTexture, st + off_y) - texture(LastTexture, st - off_y);
-									  grady += texture(CurrTexture, st + off_y) - texture(CurrTexture, st - off_y);
+									  gradx =  (texture(LastTexture, st + off_x) - texture(LastTexture, st - off_x))*factor;
+									  gradx += (texture(CurrTexture, st + off_x) - texture(CurrTexture, st - off_x))*factor;
+									  grady =  (texture(LastTexture, st + off_y) - texture(LastTexture, st - off_y))*factor;
+									  grady += (texture(CurrTexture, st + off_y) - texture(CurrTexture, st - off_y))*factor;
 
 									  gradmag = sqrt((gradx*gradx)+(grady*grady)+vec4(lambda));
 									  vx = scr_dif*(gradx/gradmag);

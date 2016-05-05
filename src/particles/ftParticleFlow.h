@@ -69,7 +69,8 @@ namespace flowTools {
 		ofParameter<float>	sizeSpread;
 		ofParameter<float>	twinkleSpeed;
 		ofParameter<float>  spawnHue;
-		
+		ofParameter<float>  stretchFactor;
+        
 		float	simulationWidth;
 		float	simulationHeight;
 		float	numParticlesX;

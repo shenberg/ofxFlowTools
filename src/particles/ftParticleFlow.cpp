@@ -50,6 +50,7 @@ namespace flowTools {
 		parameters.add(sizeSpread.set("size spread", .75, 0, 1));
 		parameters.add(twinkleSpeed.set("twinkle speed", 11, 0, 20));
 		parameters.add(spawnHue.set("spawn hue", 0, 0, 1));
+        parameters.add(stretchFactor.set("stretch", 1, 0, 10));
 	}
 	
 	void ftParticleFlow::setup(int _simulationWidth, int _simulationHeight, int _numParticlesX, int _numParticlesY) {
@@ -180,7 +181,7 @@ namespace flowTools {
         if (!bStretch) {
             drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb);
         } else {
-            drawParticleStretchedShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb, _velocity, particleTexture);
+            drawParticleStretchedShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb, _velocity, particleTexture, timeStep*stretchFactor.get());
         }
 		
 		ofPopView();

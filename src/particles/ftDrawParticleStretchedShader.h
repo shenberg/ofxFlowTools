@@ -116,13 +116,15 @@ namespace flowTools {
             uniform sampler2D HueToRGB;
 			uniform sampler2DRect VelocityTexture;
             uniform float TwinkleSpeed;
+            uniform float StretchScale;
+            
 
             out vec4 colorVarying;
             out vec2 texCoordVarying;
 
 			layout(points) in;
 			layout(triangle_strip) out;
-			layout(max_vertices = 8) out;
+			layout(max_vertices = 4) out;
 
 			void main() {
 				vec2 index = gl_in[0].gl_Position.xy;
@@ -154,19 +156,27 @@ namespace flowTools {
                 vec3 rgb = texture(HueToRGB, vec2(centerAndHue.z, 0)).rgb;
                 
                 float alpha = min (0.5 - (age / life) * 0.5,age * 5.);
-                alpha *= 0.5 + (cos((age + size) * TwinkleSpeed * mass) + 1.0) * 0.5;
+                // TODO: differently. putting this back in kills performance
+                //alpha *= 0.5 + (cos((age + size) * TwinkleSpeed * mass) + 1.0) * 0.5;
                 alpha = max(alpha, 0.0);
 
                 colorVarying = vec4(rgb,alpha);
+                float scale = 0.5 + (StretchScale * speed);
+                vec4 hackCenter = modelViewProjectionMatrix * vec4(center,0,1);
+                // no translation for direction vectors (set w to 0)
+                vec4 hackDx = modelViewProjectionMatrix * vec4(dx,0,0) * scale;
+                vec4 hackDy = modelViewProjectionMatrix * vec4(dy,0,0) * 0.5;
                 
                 texCoordVarying = vec2(1,0);
-				gl_Position = modelViewProjectionMatrix * vec4(center + dx * (0.5 + speed) - dy, 0, 1);
+				//gl_Position = modelViewProjectionMatrix * vec4(center + dx * scale - dy, 0, 1);
+                gl_Position = hackCenter + hackDx - hackDy;
 				EmitVertex();
 
                 texCoordVarying = vec2(1,1);
-				gl_Position = modelViewProjectionMatrix * vec4(center + dx * (0.5 + speed) + dy, 0, 1);
+				//gl_Position = modelViewProjectionMatrix * vec4(center + dx * scale + dy, 0, 1);
+                gl_Position = hackCenter + hackDx + hackDy;
 				EmitVertex();
-
+/*
                 texCoordVarying = vec2(0.5,0);
                 gl_Position = modelViewProjectionMatrix * vec4(center + dx * speed - dy, 0, 1);
                 EmitVertex();
@@ -182,14 +192,16 @@ namespace flowTools {
                 texCoordVarying = vec2(0.5,1);
                 gl_Position = modelViewProjectionMatrix * vec4(center - dx * speed + dy, 0, 1);
                 EmitVertex();
-                
+*/
                 texCoordVarying = vec2(0,0);
-				gl_Position = modelViewProjectionMatrix * vec4(center - dx * (0.5 + speed) - dy, 0, 1);
-				EmitVertex();
+				//gl_Position = modelViewProjectionMatrix * vec4(center - dx * scale - dy, 0, 1);
+                gl_Position = hackCenter - hackDx - hackDy;
+                EmitVertex();
 
                 texCoordVarying = vec2(0,1);
-				gl_Position = modelViewProjectionMatrix * vec4(center - dx * (0.5 + speed) + dy, 0, 1);
-				EmitVertex();
+				//gl_Position = modelViewProjectionMatrix * vec4(center - dx * scale + dy, 0, 1);
+                gl_Position = hackCenter - hackDx + hackDy;
+                EmitVertex();
 
 				EndPrimitive();
 
@@ -205,7 +217,7 @@ namespace flowTools {
 		
 	public:
 		
-		void update(ofVboMesh &particleVbo, int _numParticles, ofTexture& _positionTexture, ofTexture& _ALMSTexture, float _twinkleSpeed, ofTexture& _hueLookup, ofTexture& _velocityTexture, ofTexture& _intensityMap){
+		void update(ofVboMesh &particleVbo, int _numParticles, ofTexture& _positionTexture, ofTexture& _ALMSTexture, float _twinkleSpeed, ofTexture& _hueLookup, ofTexture& _velocityTexture, ofTexture& _intensityMap, float _stretchScale){
 			shader.begin();
 			shader.setUniformTexture("PositionTexture", _positionTexture, 0);
 			shader.setUniformTexture("ALMSTexture", _ALMSTexture, 1);
@@ -213,6 +225,7 @@ namespace flowTools {
 			shader.setUniformTexture("VelocityTexture", _velocityTexture, 3);
             shader.setUniformTexture("IntensityMap", _intensityMap, 4);
 			shader.setUniform1f("TwinkleSpeed", _twinkleSpeed);
+            shader.setUniform1f("StretchScale", _stretchScale);
 			
 			bool dinges = true;
 			//glEnable(GL_POINT_SMOOTH);

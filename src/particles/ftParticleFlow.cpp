@@ -181,7 +181,7 @@ namespace flowTools {
         if (!bStretch) {
             drawParticleShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb);
         } else {
-            drawParticleStretchedShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb, _velocity, particleTexture, timeStep*stretchFactor.get());
+            drawParticleStretchedShader.update(particleMesh, numParticles, particlePositionSwapBuffer.getBackTexture(), particleAgeLifespanMassSizeSwapBuffer.getBackTexture(), twinkleSpeed.get(), hueToRgb, _velocity, particleTexture);
         }
 		
 		ofPopView();

@@ -50,6 +50,10 @@ namespace flowTools {
 		parameters.add(sizeSpread.set("size spread", .75, 0, 1));
 		parameters.add(twinkleSpeed.set("twinkle speed", 11, 0, 20));
 		parameters.add(spawnHue.set("spawn hue", 0, 0, 1));
+		parameters.add(spawnHueAnimate.set("spawn hue animate", false));
+		spawnHueAnimate.addListener(this, &ftParticleFlow::startSpawnHueAnimation);
+		parameters.add(spawnHueAnimateTime.set("spawn hue animate time", 5, 0, 360));
+		parameters.add(spawnHueAnimateRange.set("spawn hue animate range", 0, 0, 1));
         parameters.add(stretchFactor.set("stretch", 1, 0, 10));
 	}
 	
@@ -171,6 +175,8 @@ namespace flowTools {
 			fluidVelocitySwapBuffer.black();
 			densitySwapBuffer.black();
 			obstacleBuffer.black();
+
+			updateSpawnHueAnimation();
 		}
 	}
 	
@@ -218,4 +224,47 @@ namespace flowTools {
 		obstacleBuffer.end();
 		ofPopStyle();
 	}
+
+	void ftParticleFlow::startSpawnHueAnimation(bool& isStart) {
+		if (!isStart) {
+			return;
+		}
+		spawnHueAnimateBase = spawnHue;
+		//Prevent a case where we can go beyond 0
+		if (spawnHue < spawnHueAnimateRange) {
+			spawnHueAnimateRange = spawnHue;
+		}
+		//We are starting from the middle of the range
+		//spawnHueAnimateStartTime = ofGetElapsedTimef() + (spawnHueAnimateTime.get() / 2);
+		spawnHueAnimateStartTime = ofGetElapsedTimef() - (spawnHueAnimateTime.get() / 2);
+	}
+
+	void ftParticleFlow::updateSpawnHueAnimation() {
+		if (!spawnHueAnimate || spawnHueAnimateTime <= 0) {
+			return;
+		}
+
+		float timeInAnimation = fmod((ofGetElapsedTimef() - spawnHueAnimateStartTime), spawnHueAnimateTime.get());
+		float amount = ofMap(timeInAnimation, 0, spawnHueAnimateTime, 0, 1);
+
+		ofLogWarning(ofToString(timeInAnimation));
+		ofLogWarning(ofToString(amount));
+
+		float spawnHueStartRange, spawnHueEndRange;
+		if (timeInAnimation < (spawnHueAnimateTime.get() / 2)) {
+			spawnHueStartRange = spawnHueAnimateBase - spawnHueAnimateRange;
+			spawnHueEndRange = spawnHueAnimateBase + spawnHueAnimateRange;
+		}
+		else
+		{
+			spawnHueStartRange = spawnHueAnimateBase + spawnHueAnimateRange;
+			spawnHueEndRange = spawnHueAnimateBase - spawnHueAnimateRange;
+		}
+
+		float newSpawnHue = ofLerp(spawnHueStartRange, spawnHueEndRange, amount);
+		if (newSpawnHue > 0) {
+			spawnHue.set(newSpawnHue);
+		}
+	}
+
 }

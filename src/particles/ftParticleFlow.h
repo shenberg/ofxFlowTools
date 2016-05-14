@@ -22,6 +22,10 @@ namespace flowTools {
 		void addFlowVelocity(ofTexture& _tex, float _strength = 1.0) ;
 		void addFluidVelocity (ofTexture& _tex, float _strength = 1.0) ;
 		void setObstacle (ofTexture& _tex) ;
+
+		void startSpawnHueAnimation(bool &);
+
+		void updateSpawnHueAnimation();
 		
 		void update(float _deltaTime = 0);
 		
@@ -69,6 +73,9 @@ namespace flowTools {
 		ofParameter<float>	sizeSpread;
 		ofParameter<float>	twinkleSpeed;
 		ofParameter<float>  spawnHue;
+		ofParameter<bool>   spawnHueAnimate;
+		ofParameter<float>  spawnHueAnimateTime;
+		ofParameter<float>  spawnHueAnimateRange;
 		ofParameter<float>  stretchFactor;
         
 		float	simulationWidth;
@@ -79,6 +86,8 @@ namespace flowTools {
 		float	deltaTime;
 		float	lastTime;
 		float	timeStep;
+		float	spawnHueAnimateBase;
+		float	spawnHueAnimateStartTime;
 		
 		ofTexture *flowVelocityTexture;
 		ofTexture *fluidVelocityTexture;

@@ -247,9 +247,6 @@ namespace flowTools {
 		float timeInAnimation = fmod((ofGetElapsedTimef() - spawnHueAnimateStartTime), spawnHueAnimateTime.get());
 		float amount = ofMap(timeInAnimation, 0, spawnHueAnimateTime, 0, 1);
 
-		ofLogWarning(ofToString(timeInAnimation));
-		ofLogWarning(ofToString(amount));
-
 		float spawnHueStartRange, spawnHueEndRange;
 		if (timeInAnimation < (spawnHueAnimateTime.get() / 2)) {
 			spawnHueStartRange = spawnHueAnimateBase - spawnHueAnimateRange;

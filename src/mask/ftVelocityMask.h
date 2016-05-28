@@ -42,7 +42,6 @@ namespace flowTools {
 		ofParameter<float>	blurRadius;
 	public:
         ofParameter<float>  hueOffset;
-	
 	protected:
 		int					width;
 		int					height;
